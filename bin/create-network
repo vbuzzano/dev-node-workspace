@@ -1,0 +1,2 @@
+#!/bin/bash
+docker network create --gateway 192.168.92.1 --subnet 192.168.92.0/24 dev_network

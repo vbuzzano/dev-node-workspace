@@ -1,0 +1,41 @@
+version: '2.4'
+
+## Uncomment if a specific development network
+#networks:
+#  dev_network:
+#    external:
+#      name: dev_network
+
+services:
+
+  dev.node.workspace:
+    image: code28tech/dev-node-workspace:latest
+    container_name: dev.node.workspace
+    build: $BUILD_DIR
+    user: $PUID:$PGID
+    ## Uncomment to not use CODE-SERVER
+    #command: ["sleep","infinity"]
+    restart: unless-stopped
+    mem_limit: 4G # uncomment if you not use memory limitation
+    cpus: 4 # uncomment if you not use cpus limitation
+    environment:
+      - WORKSPACE_DIR=$WORKSPACE
+      - NODE_ENV=$NODE_ENV
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/sysctl.conf:/etc/sysctl.conf
+      - $STACK_CONFIG_DIR/code-server:/home/node/.code-server
+      - $STACK_CONFIG_DIR/vscode-server:/home/node/.vscode-server
+      - $STACK_WORKSPACE_DIR:$WORKSPACE
+    ## Uncomment if a specific development network
+    #networks:
+    #  - dev_network
+    ports:
+      - 8443:8443 # code-server
+      - 3100-3110:3000-3010 #node js dev port
+      ## Other ports
+      #- 3180:8080
+      #- 5000:5000
+      #- 24678:24678
+      #- 35729:35729
+

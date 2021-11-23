@@ -1,0 +1,7 @@
+#!/bin/sh
+. `dirname $0`/../.env
+
+cd $STACK_DIR && \
+docker-compose build && \
+docker tag code28tech/dev-node-workspace:latest code28tech/dev-node-workspace:latest && \
+docker push code28tech/dev-node-workspace:latest

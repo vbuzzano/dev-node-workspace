@@ -1,0 +1,6 @@
+.env
+workspace/*
+config/vscode-server/*
+config/code-server/*
+
+!README.md
