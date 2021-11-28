@@ -18,7 +18,7 @@ RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then groupmod --g
 
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends htop wget curl less iputils-ping dnsutils telnet docker.io docker-compose python3-pip python3 python3-setuptools python3-wheel
+    && apt-get -y install --no-install-recommends htop wget curl less iputils-ping dnsutils telnet docker.io docker-compose
 RUN usermod -aG docker node
 
 # Install latest Code Server
@@ -43,9 +43,6 @@ RUN export PATH=$PATH
 RUN mkdir /home/node/.npm-global && \
     npm config set prefix '/home/node/.npm-global' && \
     npm install -g @waves/surfboard cross-env webpack webpack-cli typescript ts-node http-server license-checker ipfs-car
-
-#Install ipfs-publish
-RUN bash --rcfile /home/node/.bashrc -c "pip3 install ipfs-publish"
 
 
 RUN printf "\n\nalias ll='ls -hlF'\nalias la='ls -AhlF'\nalias l='ls -CF'\n" >> /home/node/.bashrc
