@@ -18,27 +18,37 @@ RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then groupmod --g
 
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends htop wget curl less iputils-ping dnsutils telnet docker.io docker-compose
+    && apt-get -y install --no-install-recommends htop wget curl less iputils-ping dnsutils telnet docker.io docker-compose python3-pip python3 python3-setuptools python3-wheel
 RUN usermod -aG docker node
 
 # Install latest Code Server
 ENV CONFIG_DIR=/home/node/.code-server
 RUN mkdir -p $CONFIG_DIR && ln -s $CONFIG_DIR /config && chown node:node -R $CONFIG_DIR /config
-#RUN curl -fsSL https://code-server.dev/install.sh > ./install-code-server.sh && sh ./install-code-server.sh
+RUN curl -fsSL https://code-server.dev/install.sh > ./install-code-server.sh && sh ./install-code-server.sh
 
 #ARG EXTRA_NODE_VERSION=14
 #RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
-
-RUN mkdir /home/node/.npm-global && chown node:node -R home/node/.npm-global
-RUN su node -c "npm config set prefix '/home/node/.npm-global'"
-RUN su node -c "npm install -g @waves/surfboard cross-env webpack webpack-cli typescript ts-node http-server license-checker"
-
-RUN su node -c "printf \"\nalias ll='ls -hlF'\nalias la='ls -AhlF'\nalias l='ls -CF'\" >> ~/.bashrc"
 
 # Create workspace directory
 ENV WORKSPACE_DIR=/home/node/workspace
 RUN mkdir -p $WORKSPACE_DIR && ln -s $WORKSPACE_DIR /workspace && chown node:node -R $WORKSPACE_DIR /workspace
 WORKDIR $WORKSPACE_DIR
+
+USER node
+
+# NPM setup
+#RUN printf "\nexport PATH=/home/node/.local/bin:\$PATH\n" >> /home/node/.bashrc && export PATH
+ENV PATH=/home/node/bin:/home/node/.local/bin:/home/node/.npm-global/bin:$PATH
+RUN export PATH=$PATH
+RUN mkdir /home/node/.npm-global && \
+    npm config set prefix '/home/node/.npm-global' && \
+    npm install -g @waves/surfboard cross-env webpack webpack-cli typescript ts-node http-server license-checker ipfs-car
+
+#Install ipfs-publish
+RUN bash --rcfile /home/node/.bashrc -c "pip3 install ipfs-publish"
+
+
+RUN printf "\n\nalias ll='ls -hlF'\nalias la='ls -AhlF'\nalias l='ls -CF'\n" >> /home/node/.bashrc
 
 # ADD Starting script
 ADD ./start.sh /start.sh
