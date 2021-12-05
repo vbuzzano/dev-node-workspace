@@ -3,5 +3,13 @@
 
 cd $STACK_DIR && \
 docker-compose build && \
-docker tag code28tech/dev-node-workspace:latest code28tech/dev-node-workspace:latest && \
+
+# Tag and Publish Tag Latest
+docker tag dev-node-workspace code28tech/dev-node-workspace:latest && \
 docker push code28tech/dev-node-workspace:latest
+
+# Tag and Publish Tag Version
+docker tag dev-node-workspace code28tech/dev-node-workspace:${IMG_VERSION} && \
+docker push code28tech/dev-node-workspace:${IMG_VERSION}
+
+echo "Done"
