@@ -8,9 +8,9 @@ version: '2.4'
 
 services:
 
-  dev.node.workspace:
-    image: code28tech/dev-node-workspace:latest
-    container_name: dev.node.workspace
+  dev-node-workspace:
+    image: dev-node-workspace
+    container_name: dev-node-workspace
     build: $BUILD_DIR
     user: $PUID:$PGID
     ## Uncomment to not use CODE-SERVER
